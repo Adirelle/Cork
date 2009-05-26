@@ -18,3 +18,8 @@ Cork:GenerateAdvancedSelfBuffer("Demon Skin", {687, 706, 28176})
 --~ i.target = "Friendly"
 --~ i.spell = ueb
 
+-- Reagents
+Cork:GenerateReagentWatcher({
+	[ 1122] = {  5565 }, -- Inferno	
+	[18540] = { 16583 }, -- Ritual of Doom
+})

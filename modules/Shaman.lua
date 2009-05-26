@@ -23,3 +23,7 @@ Cork:GenerateLastBuffedBuffer(spellname, icon)
 --~ i.target = "Friendly"
 --~ i.spell = ww
 
+-- Reagents
+Cork:GenerateReagentWatcher({
+	[20608] = { 17030 } -- Reincarnation
+})

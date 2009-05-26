@@ -16,3 +16,8 @@ Cork:GenerateSelfBuffer(spellname, icon)
 -- Horn of Winter
 local spellname, _, icon = GetSpellInfo(57330)
 Cork:GenerateSelfBuffer(spellname, icon)
+
+-- Reagents
+Cork:GenerateReagentWatcher({
+	[46584] = { 37201, glyph = 60200 } -- Raise Dead
+})
