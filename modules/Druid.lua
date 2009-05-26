@@ -21,3 +21,12 @@ end
 -- Thorns
 local spellname, _, icon = GetSpellInfo(467)
 Cork:GenerateLastBuffedBuffer(spellname, icon)
+
+Cork:GenerateReagentWatcher("Druid", {
+	-- Gift ot the Wild, ranks 1 to 4
+	[21849] = 17201,
+	[21850] = 17026,
+	[26991] = 22148,
+	[48470] = 44605,
+})
+
