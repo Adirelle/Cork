@@ -22,7 +22,7 @@ end
 local spellname, _, icon = GetSpellInfo(467)
 Cork:GenerateLastBuffedBuffer(spellname, icon)
 
-Cork:GenerateReagentWatcher(c, {
+Cork:GenerateReagentWatcher({
 	-- Gift of the Wlid
 	[21849] = { 17201, 17026, 22148, 44605 },
 	-- Rebirth
