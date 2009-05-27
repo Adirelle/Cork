@@ -25,7 +25,7 @@ Cork:GenerateLastBuffedBuffer(spellname, icon)
 --Reagents
 Cork:GenerateReagentWatcher({
 	-- Gift of the Wlid
-	[21849] = { 17201, 17026, 22148, 44605 },
+	[21849] = { 17201, 17026, 22148, 44605, wantMany = true },
 	-- Rebirth
 	[20484] = {
 		17034, 17035, 17036, 17037, 17038, 22147, 44614,

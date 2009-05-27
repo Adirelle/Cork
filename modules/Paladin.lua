@@ -16,7 +16,7 @@ local isawhorde = UnitFactionGroup("player") == "Horde"
 Cork:GenerateAdvancedSelfBuffer("Seal", {21084, 20375, isawhorde and 31892 or 53720, 20166, isawhorde and 53736 or 31801, 20165, 20164})
 
 -- Reagents
-local SYMBOL_OF_KINGS = { 21177, 21177, 21177, 21177, 21177 }
+local SYMBOL_OF_KINGS = { 21177, 21177, 21177, 21177, 21177, wantMany = true }
 Cork:GenerateReagentWatcher({
 	-- Greater Blessing of Kings
 	[25989] = SYMBOL_OF_KINGS,

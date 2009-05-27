@@ -30,7 +30,7 @@ Cork:GenerateRaidBuffer(spellname, nil, icon, false)
 --Reagents
 local RUNE_OF_TELEPORTATION = { 17031 }
 local RUNE_OF_PORTALS = { 17032 }
-local ARCANE_POWDER = { 17020, 17020, 17020 }
+local ARCANE_POWDER = { 17020, 17020, 17020, wantMany = true }
 local reagents
 -- Only the lowest level portals and teleports are listed
 if UnitFactionGroup("player") == "Horde" then

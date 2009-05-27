@@ -33,7 +33,7 @@ Cork:GenerateLastBuffedBuffer(spellname, icon)
 
 -- Reagents
 Cork:GenerateReagentWatcher({
-	[27681] = { 17029, 17029, 44615 }, -- Prayer of Spirit
-	[21562] = { 17028, 17029, 17029, 44615 }, -- Prayer of Fortitude
-	[27683] = { 17029, 17029, 44615 }, -- Prayer of Shadow Protection
+	[27681] = { 17029, 17029, 44615, wantMany = true }, -- Prayer of Spirit
+	[21562] = { 17028, 17029, 17029, 44615, wantMany = true }, -- Prayer of Fortitude
+	[27683] = { 17029, 17029, 44615, wantMany = true }, -- Prayer of Shadow Protection
 })

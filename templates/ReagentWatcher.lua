@@ -1,10 +1,11 @@
 local Cork = Cork
 
+-- Use a lazily-created cork singleton that will handle all reagents
 function Cork:GenerateReagentWatcher(newReagents)
 
 	local IconLine = Cork.IconLine
 	local ldb, ae = LibStub:GetLibrary("LibDataBroker-1.1"), LibStub("AceEvent-3.0")
-	
+
 	local GetNumGlyphSockets = GetNumGlyphSockets
 	local GetGlyphSocketInfo = GetGlyphSocketInfo
 	local GetSpellName = GetSpellName
@@ -12,7 +13,7 @@ function Cork:GenerateReagentWatcher(newReagents)
 	local GetItemInfo = GetItemInfo
 	local GetItemCount = GetItemCount
 	local GetMerchantItemInfo = GetMerchantItemInfo
-	
+
 	local buckets = {}
 	local bucketFrame = CreateFrame("Frame")
 	bucketFrame:Hide()
@@ -22,28 +23,30 @@ function Cork:GenerateReagentWatcher(newReagents)
 	defaults['Reagents-stacks'] = 2
 	defaults['Reagents-autofill'] = true
 
-	local glyphs = {}
 	local reagents = {}
+
+	local glyphs = {}
 	local items = {}
 	local icons = {}
-	local counts ={}
+	local counts = {}
 	local stackSizes = {}
-	
+	local stackObjectives = {}
+
 	local autoFilling = false
 	local doNotBuy = false
-	
+
 	local dataobj
 	local db
-	
+
 	------------------------------------------------------------
 	-- Glyph, spellbook and bags scanning
 	------------------------------------------------------------
-	
+
 	function bucketFrame.Scan()
 		local wantedStacks = db['Reagents-stacks']
 		for item in pairs(items) do
 			local count = counts[item]
-			local threshold = wantedStacks * stackSizes[item]
+			local threshold = (stackObjectives[item] or wantedStacks) * stackSizes[item]
 			if count and count < 0.8*threshold then
 				dataobj[item] = IconLine(icons[item], ("%s (%d/%d)"):format(item, count, threshold))
 			else
@@ -51,7 +54,7 @@ function Cork:GenerateReagentWatcher(newReagents)
 			end
 		end
 	end
-	
+
 	function bucketFrame.UpdateCounts()
 		wipe(counts)
 		doNotBuy = false
@@ -63,7 +66,7 @@ function Cork:GenerateReagentWatcher(newReagents)
 			dataobj:CorkIt()
 		end
 	end
-	
+
 	function bucketFrame.UpdateReagents()
 		for item in pairs(items) do
 			dataobj[item] = nil
@@ -71,19 +74,23 @@ function Cork:GenerateReagentWatcher(newReagents)
 		wipe(items)
 		wipe(icons)
 		wipe(stackSizes)
+		wipe(stackObjectives)
 		for spell, data in pairs(reagents) do
 			if not data.glyph or not glyphs[data.glyph] then
 				local spellName, rank = GetSpellInfo(spell)
 				local itemId = spellName and data[(rank and tonumber(rank:match("(%d+)"))) or 1]
 				if itemId then
-					local item, _, _, _, _, _, _, stackSize, _, icon = GetItemInfo(itemId) 
+					local item, _, _, _, _, _, _, stackSize, _, icon = GetItemInfo(itemId)
 					items[item], stackSizes[item], icons[item] = true, stackSize, icon
+					if not data.wantMany then
+						stackObjectives[item] = 1
+					end
 				end
 			end
 		end
 		buckets.UpdateCounts = "UpdateReagents"
 	end
-	
+
 	function bucketFrame.UpdateGlyphs()
 		wipe(glyphs)
 		for index = 1, GetNumGlyphSockets() do
@@ -94,23 +101,23 @@ function Cork:GenerateReagentWatcher(newReagents)
 		end
 		buckets.UpdateReagents = "UpdateGlyphs"
 	end
-	
+
 	------------------------------------------------------------
 	-- Create the cork
 	------------------------------------------------------------
-	
+
 	dataobj = ldb:NewDataObject('Cork Reagents', {type = "cork"})
 
 	function dataobj:Init()
 		db = Cork.dbpc
 		buckets.UpdateGlyphs = "Init"
 	end
-	
-	function dataobj:Scan()		
+
+	function dataobj:Scan()
 		buckets.Scan = "Scan"
 		bucketFrame:Activate()
 	end
-	
+
 	-- Autobuying stuff
 	function dataobj:CorkIt()
 		if not bucketFrame:IsShown() or doNotBuy or MainMenuBarBackpackButton.freeSlots == 0 then return end
@@ -121,7 +128,7 @@ function Cork:GenerateReagentWatcher(newReagents)
 		autoFilling = false
 		for item in pairs(items) do
 			local count, stackSize = counts[item], stackSizes[item]
-			local wanted = math.min((stackSize * wantedStacks) - count, stackSize)
+			local wanted = math.min((stackSize * (stackObjectives[item] or wantedStacks)) - count, stackSize)
 			if wanted > 0 then
 				for index = 1, num do
 					local merchantItem, _, _, quantity = GetMerchantItemInfo(index)
@@ -135,7 +142,7 @@ function Cork:GenerateReagentWatcher(newReagents)
 			end
 		end
 	end
-		
+
 	-- Handle autofilling when talking to a merchant
 	ae.RegisterEvent(dataobj, "MERCHANT_SHOW", function()
 		if db['Reagents-autofill'] then
@@ -143,11 +150,11 @@ function Cork:GenerateReagentWatcher(newReagents)
 			dataobj:CorkIt()
 		end
 	end)
-	
+
 	------------------------------------------------------------
 	-- Homebrew Event buckecting to reduce CPU usage
 	------------------------------------------------------------
-	
+
 	local bucketOrder = { "UpdateGlyphs", "UpdateReagents", "UpdateCounts", "Scan" }
 	local BUCKET_COUNT = #bucketOrder
 	bucketFrame:SetScript('OnUpdate',  function(self)
@@ -161,7 +168,7 @@ function Cork:GenerateReagentWatcher(newReagents)
 			wipe(buckets)
 		end
 	end)
-	
+
 	bucketFrame:SetScript('OnShow', function() buckets.UpdateCounts = "OnShow" end)
 
 	bucketFrame:SetScript('OnHide', function()
@@ -169,11 +176,11 @@ function Cork:GenerateReagentWatcher(newReagents)
 			dataobj[item] = nil
 		end
 	end)
-	
+
 	function bucketFrame:BucketEvent(arg, event)
 		buckets[arg] = buckets[arg] or event
 	end
-	
+
 	function bucketFrame:Activate()
 		if db['Reagents-enabled'] and IsResting() and not InCombatLockdown() then
 			self:Show()
@@ -181,7 +188,7 @@ function Cork:GenerateReagentWatcher(newReagents)
 			self:Hide()
 		end
 	end
-	
+
 	ae.RegisterEvent(bucketFrame, "BAG_UPDATE", "BucketEvent", "UpdateCounts")
 	ae.RegisterEvent(bucketFrame, "PLAYER_UPDATE_RESTING", "BucketEvent", "Scan")
 	ae.RegisterEvent(bucketFrame, "SPELLS_CHANGED", "BucketEvent", "UpdateReagents")
@@ -196,7 +203,7 @@ function Cork:GenerateReagentWatcher(newReagents)
 	------------------------------------------------------------
 	-- Configuration frame
 	------------------------------------------------------------
-	
+
 	local configFrame = CreateFrame("Frame", nil, Cork.config)
 	configFrame:SetWidth(1)
 	configFrame:SetHeight(1)
@@ -210,9 +217,9 @@ function Cork:GenerateReagentWatcher(newReagents)
 			db['Reagents-autofill'] = not not checkBox:GetChecked()
 		end)
 		checkBox:SetPoint('RIGHT', self, 'RIGHT', -fs:GetStringWidth(), 0)
-		
+
 		local slider = LibStub("tekKonfig-Slider").newbare(self, "RIGHT", checkBox, "LEFT")
-		slider.tiptext = 'Target stack count. Cork will try to maintain this number of stacks of each watched reagents.'
+		slider.tiptext = 'Target stack count. Cork will try to maintain this number of stacks of heavily-used reagents.'
 		slider:SetWidth(72)
 		slider:SetMinMaxValues(1,5)
 		slider:SetValueStep(1)
@@ -226,7 +233,7 @@ function Cork:GenerateReagentWatcher(newReagents)
 			sliderText:SetFormattedText("%d", newvalue)
 			dataobj:Scan()
 		end)
-		
+
 		local function Update()
 			slider:SetValue(db['Reagents-stacks'])
 			checkBox:SetChecked(db['Reagents-autofill'])
@@ -239,18 +246,18 @@ function Cork:GenerateReagentWatcher(newReagents)
 	------------------------------------------------------------
 	-- Reagent registering
 	------------------------------------------------------------
-	
+
 	local function AddReagents(Cork, newReagents)
 		for id, data in pairs(newReagents) do
 			local spell = GetSpellInfo(id)
-			if spell then				
+			if spell then
 				reagents[spell] = data
 			end
 		end
 		buckets.UpdateReagents = "AddReagents"
 		return dataobj
 	end
-	
+
 	Cork.GenerateReagentWatcher = AddReagents
 
 	return AddReagents(Cork, newReagents)
