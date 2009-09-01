@@ -214,7 +214,7 @@ end
 
 
 secureframe:SetScript("PreClick", function(self)
-	if InCombatLockdown() or IsStealthed() then return end
+	if InCombatLockdown() or IsStealthed() or IsFlying() then return end
 	for name,dataobj in pairs(corks) do if dataobj.CorkIt and dataobj.player and dataobj:CorkIt(self) then return end end
 	for name,dataobj in pairs(corks) do if dataobj.CorkIt and not dataobj.player and dataobj:CorkIt(self, true) then return end end
 	for name,dataobj in pairs(corks) do if dataobj.CorkIt and not dataobj.player and dataobj:CorkIt(self) then return end end
