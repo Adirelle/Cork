@@ -15,7 +15,7 @@ local ITEMS = {
 	[34056] = 3,  -- Lesser Cosmic Essence
 }
 
-Cork.defaultspc["Combine-enabled"] = true
+Cork.defaultspc[MODULE.."-enabled"] = true
 
 local dataobj = ldb:NewDataObject("Cork "..MODULE, {type = "cork"})
 
@@ -30,7 +30,6 @@ function dataobj:Scan()
 			end
 		end
 	end
-	dataobj.player = nil
 end
 
 ae.RegisterEvent("Cork "..MODULE, "BAG_UPDATE", dataobj.Scan)
