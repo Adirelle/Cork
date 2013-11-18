@@ -20,11 +20,9 @@ local function AnyOf(...)
 	return function(unit)
 		for i, name in pairs(names) do
 			if UnitAura(unit, name) then
-				print('RaidBuffer found', name)
 				return true
 			end
 		end
-		print('RaidBuffer found nothing')
 	end
 end
 
