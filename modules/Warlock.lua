@@ -10,7 +10,7 @@ Cork:GenerateSelfBuffer(spellname, icon)
 
 -- Dark Intent
 local spellname, _, icon = GetSpellInfo(109773)
-Cork:GenerateRaidBuffer(spellname, icon)
+Cork:GenerateRaidBuffer(spellname, icon, Cork.RaidBuffs.SpellPower, Cork.RaidBuffs.Stamina)
 
 
 -- Soulstone

@@ -4,10 +4,8 @@ if Cork.MYCLASS ~= "PRIEST" then return end
 
 
 -- Fort
-local DARKINT, spellname, _, icon = GetSpellInfo(109773), GetSpellInfo(21562)
-Cork:GenerateRaidBuffer(spellname, icon, nil, nil, function(unit)
-	if UnitAura(unit, DARKINT) then return true end
-end)
+local spellname, _, icon = GetSpellInfo(21562)
+Cork:GenerateRaidBuffer(spellname, icon, Cork.RaidBuffs.Stamina)
 
 
 -- Inner Fire / Will
