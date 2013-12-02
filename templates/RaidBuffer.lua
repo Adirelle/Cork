@@ -41,7 +41,7 @@ Cork.RaidBuffs = {
 	-- NOT USED YET -- AttackSpeed = AnyOf(55610, 113742, 30809, 128432, 128433),
 
 	-- Arcane Brillance, Dalarance Brillance, Burning Wrath, Dark Intent, Still Water (hunter pet)
-	-- NOT USED YET -- SpellPower  = AnyOf(1459, 61316, 77747, 109773, 126309),
+	SpellPower  = AnyOf(1459, 61316, 77747, 109773, 126309),
 
 	-- Moonkin Aura, Mind Quickening, Elemental Oath, Energizing Spores (hunter pet)
 	-- NOT USED YET -- SpellHaste  = AnyOf(24907, 49868, 51470, 135678),
