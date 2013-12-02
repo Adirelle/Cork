@@ -29,7 +29,7 @@ end
 -- See http://www.wowhead.com/guide=1100 for details
 Cork.RaidBuffs = {
 	-- Mark of the Wild, Legacy of the Emperor, Blessing of Kings, Embrace of the Shale Spider (hunter pet)
-	Stats       = AnyOf(1126, 116781, 20217, 90363),
+	Stats       = AnyOf(1126, 115921, 20217, 90363),
 
 	-- Power Word: Fortitude, Dark Intent, Commanding Shout, Qiraji Fortitude (hunter pet)
 	Stamina     = AnyOf(21562, 109773, 469, 90364),
