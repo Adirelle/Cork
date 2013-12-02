@@ -3,14 +3,9 @@ local myname, Cork = ...
 if Cork.MYCLASS ~= "WARLOCK" then return end
 
 
--- Grimoire of Sacrifice
-local spellname, _, icon = GetSpellInfo(108503)
-Cork:GenerateSelfBuffer(spellname, icon)
-
-
 -- Dark Intent
 local spellname, _, icon = GetSpellInfo(109773)
-Cork:GenerateRaidBuffer(spellname, icon)
+Cork:GenerateRaidBuffer(spellname, icon, Cork.RaidBuffs.SpellPower, Cork.RaidBuffs.Stamina)
 
 
 -- Soulstone
