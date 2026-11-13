@@ -1,4 +1,4 @@
-## Interface: 70100
+## Interface: 16001, 70100
 
 ## Title: Cork
 ## Notes: Buff reminders and more
@@ -43,6 +43,7 @@ modules\DeathKnight.lua
 modules\Druid.lua
 modules\Hunter.lua
 modules\HunterPet.lua
+modules\HunterLoneWolfBuffs.lua
 modules\Mage.lua
 modules\Monk.lua
 modules\Paladin.lua
